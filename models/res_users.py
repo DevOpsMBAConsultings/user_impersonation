@@ -3,6 +3,7 @@
 from odoo import api, fields, models, _
 from odoo.exceptions import AccessError, UserError
 from odoo.http import request
+from odoo.service import security
 import logging
 import time
 
@@ -138,14 +139,14 @@ class ResUsers(models.Model):
 
         # Change the session uid to the target user
         request.session.uid = self.id
-        request.update_env(user=self.id)
-        
-        # Odoo 16+ requires a matching session token for the uid to prevent forced logout
-        if hasattr(self, '_compute_session_token'):
-            request.session.session_token = self._compute_session_token(request.session.sid)
 
-        # Clear registry cache; session token is auto-managed sequence but we updated it
+        # Invalidate session token cache as we've changed the uid
         request.env.registry.clear_cache()
+        
+        # Odoo 16+ requires a matching session token for the uid 
+        # compute_session_token will read the *new* session.uid and hash it
+        if hasattr(security, 'compute_session_token'):
+            request.session.session_token = security.compute_session_token(request.session, request.env)
 
         _logger.warning(
             'User %s (ID: %s) started impersonating user %s (ID: %s) from IP %s',
@@ -232,12 +233,13 @@ class ResUsers(models.Model):
 
         # Restore original uid
         request.session.uid = original_uid
-        request.update_env(user=original_uid)
-        
-        # Odoo 16+ requires a matching session token for the uid 
-        original_user = self.env['res.users'].browse(original_uid)
-        if hasattr(original_user, '_compute_session_token'):
-            request.session.session_token = original_user._compute_session_token(request.session.sid)
+
+        # Invalidate session token cache as we've changed the uid
+        request.env.registry.clear_cache()
+
+        # Update session token for the restored user uid
+        if hasattr(security, 'compute_session_token'):
+            request.session.session_token = security.compute_session_token(request.session, request.env)
 
         # Clean up all impersonate flags
         request.session.pop('impersonate_active', None)
