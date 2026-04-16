@@ -7,11 +7,10 @@
         <field name="inherit_id" ref="base.view_users_form"/>
         <field name="arch" type="xml">
             <xpath expr="//header" position="inside">
-                <button name="%(action_open_impersonate_wizard)d"
+                <button name="action_impersonate"
                         string="Impersonate User"
                         title="Login as this user (secure)"
-                        type="action"
-                        context="{'default_user_id': id}"
+                        type="object"
                         class="btn-primary"
                         icon="fa-user-secret"
                         groups="base.group_system"
@@ -20,23 +19,7 @@
             </xpath>
         </field>
     </record>
-    
-    <!-- Add Impersonate button to user list view -->
-    <record id="view_users_list_impersonate" model="ir.ui.view">
-        <field name="name">res.users.list.impersonate</field>
-        <field name="model">res.users</field>
-        <field name="inherit_id" ref="base.view_users_list"/>
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name='lang']" position="after">
-                <button name="%(action_open_impersonate_wizard)d"
-                        title="Impersonate User"
-                        type="action"
-                        context="{'default_user_id': id}"
-                        icon="fa-user-secret"
-                        groups="base.group_system"
-                        invisible="id == uid"
-                        />
-            </xpath>
-        </field>
-    </record>
+
+    <!-- NOTE: base.view_users_list does not exist in Odoo 19.
+         The Impersonate button is available from the user form view above. -->
 </odoo>

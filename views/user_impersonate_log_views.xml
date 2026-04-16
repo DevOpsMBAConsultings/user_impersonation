@@ -84,10 +84,10 @@
         </field>
     </record>
     
-    <!-- Main menu category for User Impersonation under Technical -->
+    <!-- Main menu category for User Impersonation under Settings > Technical -->
     <record id="menu_user_impersonation_root" model="ir.ui.menu">
         <field name="name">User Impersonation</field>
-        <field name="parent_id" ref="base.menu_custom"/>
+        <field name="parent_id" ref="base.menu_administration"/>
         <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
         <field name="sequence">50</field>
     </record>

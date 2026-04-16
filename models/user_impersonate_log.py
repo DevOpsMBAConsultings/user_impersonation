@@ -73,6 +73,7 @@ class UserImpersonateLog(models.Model):
             else:
                 log.duration = 0.0
     
+    @api.depends('admin_user_id', 'target_user_id', 'create_date')
     def _compute_display_name(self):
         """Display format for the log entries"""
         for log in self:

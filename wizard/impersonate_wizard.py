@@ -14,4 +14,4 @@ class ImpersonateWizard(models.TransientModel):
     def action_confirm(self):
         """Confirm and execute impersonation with reason"""
         self.ensure_one()
-        return self.user_id.with_context(impersonate_reason=self.reason).action_impersonate()
+        return self.user_id._do_impersonate(reason=self.reason)

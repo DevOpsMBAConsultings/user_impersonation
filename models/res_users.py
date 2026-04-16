@@ -37,7 +37,35 @@ class ResUsers(models.Model):
                 )
     
     def action_impersonate(self):
-        """Start impersonating this user with security controls"""
+        """Open the impersonation wizard to collect a mandatory reason before proceeding"""
+        self.ensure_one()
+
+        # Security check: only system administrators can impersonate
+        if not self.env.user.has_group('base.group_system'):
+            raise AccessError(_('Only system administrators can impersonate users'))
+
+        # Cannot impersonate yourself
+        if self.id == self.env.uid:
+            raise UserError(_('You cannot impersonate yourself'))
+
+        # Cannot impersonate another admin (security measure)
+        if self.has_group('base.group_system'):
+            raise UserError(_('For security reasons, you cannot impersonate another administrator'))
+
+        # Open the wizard so the admin must provide an audit reason
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Impersonate User'),
+            'res_model': 'impersonate.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_user_id': self.id,
+            },
+        }
+
+    def _do_impersonate(self, reason=''):
+        """Execute the actual impersonation after wizard confirmation"""
         self.ensure_one()
 
         # Validate request context
@@ -87,13 +115,11 @@ class ResUsers(models.Model):
             request.httprequest.environ.get('REMOTE_ADDR') or
             'Unknown'
         )
-        # Get reason from context (provided by wizard)
-        reason = self.env.context.get('impersonate_reason', '')
 
         _logger.info('Impersonation START - IP: %s, Admin: %s, Target: %s, Reason: %s',
                      ip_address, self.env.user.login, self.login, reason or 'Not provided')
 
-        # Log the impersonation with IP and reason (silent - no notification to user)
+        # Log the impersonation with IP and reason
         self.env['user.impersonate.log'].create({
             'admin_user_id': self.env.uid,
             'target_user_id': self.id,
