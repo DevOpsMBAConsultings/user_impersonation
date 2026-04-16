@@ -30,7 +30,6 @@
         'web',
     ],
     'data': [
-        'security/ir_model.xml',
         'security/ir.model.access.csv',
         'wizard/impersonate_wizard_views.xml',
         'views/res_users_views.xml',

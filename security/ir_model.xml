@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<odoo>
-    <!-- Models are auto-registered by the ORM in Odoo 19.
-         No manual ir.model records needed. -->
-</odoo>
