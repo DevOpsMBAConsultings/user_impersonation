@@ -52,6 +52,16 @@
             <search string="Search Impersonation Logs">
                 <field name="admin_user_id"/>
                 <field name="target_user_id"/>
+                <filter string="Date" name="filter_create_date" date="create_date"/>
+                <separator/>
+                <filter name="filter_start" string="Start Sessions" domain="[('action', '=', 'start')]"/>
+                <filter name="filter_stop" string="Stop Sessions" domain="[('action', '=', 'stop')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_admin" string="Administrator" context="{'group_by': 'admin_user_id'}"/>
+                    <filter name="group_target" string="Impersonated User" context="{'group_by': 'target_user_id'}"/>
+                    <filter name="group_date" string="Date" context="{'group_by': 'create_date:day'}"/>
+                    <filter name="group_action" string="Action" context="{'group_by': 'action'}"/>
+                </group>
             </search>
         </field>
     </record>
@@ -73,19 +83,17 @@
     </record>
     
     <!-- Main menu category for User Impersonation under Settings > Technical -->
-    <record id="menu_user_impersonation_root" model="ir.ui.menu">
-        <field name="name">User Impersonation</field>
-        <field name="parent_id" ref="base.menu_administration"/>
-        <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
-        <field name="sequence">50</field>
-    </record>
+    <menuitem id="menu_user_impersonation_root"
+              name="User Impersonation"
+              parent="base.menu_administration"
+              groups="base.group_system"
+              sequence="50"/>
 
     <!-- Menu item for impersonate logs -->
-    <record id="menu_user_impersonate_log" model="ir.ui.menu">
-        <field name="name">Impersonation Logs</field>
-        <field name="parent_id" ref="menu_user_impersonation_root"/>
-        <field name="action" ref="action_user_impersonate_log"/>
-        <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
-        <field name="sequence">10</field>
-    </record>
+    <menuitem id="menu_user_impersonate_log"
+              name="Impersonation Logs"
+              parent="menu_user_impersonation_root"
+              action="action_user_impersonate_log"
+              groups="base.group_system"
+              sequence="10"/>
 </odoo>
