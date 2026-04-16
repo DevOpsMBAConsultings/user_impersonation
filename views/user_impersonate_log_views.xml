@@ -52,9 +52,7 @@
             <search string="Search Impersonation Logs">
                 <field name="admin_user_id"/>
                 <field name="target_user_id"/>
-                <filter name="filter_today" string="Today" domain="[('create_date', '>=', context_today().strftime('%Y-%m-%d'))]"/>
-                <filter name="filter_week" string="This Week" domain="[('create_date', '>=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
-                <filter name="filter_month" string="This Month" domain="[('create_date', '>=', context_today().replace(day=1).strftime('%Y-%m-%d'))]"/>
+                <filter string="Date" name="filter_create_date" date="create_date"/>
                 <separator/>
                 <filter name="filter_start" string="Start Sessions" domain="[('action', '=', 'start')]"/>
                 <filter name="filter_stop" string="Stop Sessions" domain="[('action', '=', 'stop')]"/>
