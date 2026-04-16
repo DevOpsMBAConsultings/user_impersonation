@@ -52,14 +52,11 @@
             <search string="Search Impersonation Logs">
                 <field name="admin_user_id"/>
                 <field name="target_user_id"/>
-                <filter string="Date" name="filter_create_date" date="create_date"/>
-                <separator/>
                 <filter name="filter_start" string="Start Sessions" domain="[('action', '=', 'start')]"/>
                 <filter name="filter_stop" string="Stop Sessions" domain="[('action', '=', 'stop')]"/>
-                <group expand="0" string="Group By">
+                <group string="Group By">
                     <filter name="group_admin" string="Administrator" context="{'group_by': 'admin_user_id'}"/>
                     <filter name="group_target" string="Impersonated User" context="{'group_by': 'target_user_id'}"/>
-                    <filter name="group_date" string="Date" context="{'group_by': 'create_date:day'}"/>
                     <filter name="group_action" string="Action" context="{'group_by': 'action'}"/>
                 </group>
             </search>
