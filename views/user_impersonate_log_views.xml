@@ -44,31 +44,12 @@
         </field>
     </record>
     
-    <!-- Search view for impersonate logs -->
-    <record id="view_user_impersonate_log_search" model="ir.ui.view">
-        <field name="name">user.impersonate.log.search</field>
-        <field name="model">user.impersonate.log</field>
-        <field name="arch" type="xml">
-            <search string="Search Impersonation Logs">
-                <field name="admin_user_id"/>
-                <field name="target_user_id"/>
-                <filter name="filter_start" string="Start Sessions" domain="[('action', '=', 'start')]"/>
-                <filter name="filter_stop" string="Stop Sessions" domain="[('action', '=', 'stop')]"/>
-                <group string="Group By">
-                    <filter name="group_admin" string="Administrator" context="{'group_by': 'admin_user_id'}"/>
-                    <filter name="group_target" string="Impersonated User" context="{'group_by': 'target_user_id'}"/>
-                    <filter name="group_action" string="Action" context="{'group_by': 'action'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
-    
+
     <!-- Action for impersonate logs -->
     <record id="action_user_impersonate_log" model="ir.actions.act_window">
         <field name="name">Impersonation Logs</field>
         <field name="res_model">user.impersonate.log</field>
         <field name="view_mode">list,form</field>
-        <field name="search_view_id" ref="view_user_impersonate_log_search"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 No impersonation logs yet
