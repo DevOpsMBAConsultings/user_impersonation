@@ -138,8 +138,13 @@ class ResUsers(models.Model):
 
         # Change the session uid to the target user
         request.session.uid = self.id
+        request.update_env(user=self.id)
+        
+        # Odoo 16+ requires a matching session token for the uid to prevent forced logout
+        if hasattr(self, '_compute_session_token'):
+            request.session.session_token = self._compute_session_token(request.session.sid)
 
-        # Clear registry cache; session token is auto-managed by Odoo 19
+        # Clear registry cache; session token is auto-managed sequence but we updated it
         request.env.registry.clear_cache()
 
         _logger.warning(
@@ -227,6 +232,12 @@ class ResUsers(models.Model):
 
         # Restore original uid
         request.session.uid = original_uid
+        request.update_env(user=original_uid)
+        
+        # Odoo 16+ requires a matching session token for the uid 
+        original_user = self.env['res.users'].browse(original_uid)
+        if hasattr(original_user, '_compute_session_token'):
+            request.session.session_token = original_user._compute_session_token(request.session.sid)
 
         # Clean up all impersonate flags
         request.session.pop('impersonate_active', None)
